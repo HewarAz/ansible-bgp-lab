@@ -1,0 +1,29 @@
+---
+
+hostname: R2
+isis_net: "49.0001.0000.0000.0002.00"
+
+loopback:
+  name: Loopback0
+  ipv4: "192.168.0.2"
+  prefix_length: 32
+
+interfaces:
+  - name: GigabitEthernet0/0/0/0
+    description: "LINK-TO-R1"
+    ipv4: "10.0.1.2"
+    prefix_length: 30
+    isis_enabled: true
+  - name: GigabitEthernet0/0/0/1
+    description: "LINK-TO-R3"
+    ipv4: "10.0.2.1"
+    prefix_length: 30
+    isis_enabled: true
+
+bgp_neighbors:
+  - peer_ip: "192.168.0.1"
+    remote_as: 65000
+    description: "iBGP-to-R1"
+  - peer_ip: "192.168.0.5"
+    remote_as: 65000
+    description: "iBGP-to-R5"

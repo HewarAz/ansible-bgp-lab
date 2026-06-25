@@ -1,0 +1,48 @@
+name: xrd-isis-bgp
+
+topology:
+  kinds:
+    cisco_xrd:
+      image: ios-xr/xrd-control-plane:25.3.1
+
+  nodes:
+    R1:
+      kind: cisco_xrd
+
+    R2:
+      kind: cisco_xrd
+
+    R3:
+      kind: cisco_xrd
+
+    R4:
+      kind: cisco_xrd
+
+    R5:
+      kind: cisco_xrd
+
+    R6:
+      kind: cisco_xrd
+
+    R7:
+      kind: cisco_xrd
+
+    R8:
+      kind: cisco_xrd
+
+    R9:
+      kind: cisco_xrd
+
+    R10:
+      kind: cisco_xrd
+
+  links:
+    - endpoints: ["R1:Gi0-0-0-0", "R2:Gi0-0-0-0"]
+    - endpoints: ["R2:Gi0-0-0-1", "R3:Gi0-0-0-0"]
+    - endpoints: ["R3:Gi0-0-0-1", "R4:Gi0-0-0-0"]
+    - endpoints: ["R4:Gi0-0-0-1", "R5:Gi0-0-0-0"]
+    - endpoints: ["R1:Gi0-0-0-1", "R6:Gi0-0-0-0"]
+    - endpoints: ["R6:Gi0-0-0-1", "R7:Gi0-0-0-0"]
+    - endpoints: ["R7:Gi0-0-0-1", "R8:Gi0-0-0-0"]
+    - endpoints: ["R8:Gi0-0-0-1", "R9:Gi0-0-0-0"]
+    - endpoints: ["R9:Gi0-0-0-1", "R10:Gi0-0-0-0"]

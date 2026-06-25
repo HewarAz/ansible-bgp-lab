@@ -1,0 +1,56 @@
+
+{# ---------- HOSTNAME ---------- #}
+hostname {{ inventory_hostname }}
+
+{# ---------- LOOPBACK INTERFACE ---------- #}
+interface {{ loopback.name }}
+ ipv4 address {{ loopback.ipv4 }} 255.255.255.255
+!
+
+{# ---------- PHYSICAL INTERFACES ---------- #}
+{% for iface in interfaces %}
+interface {{ iface.name }}
+ description {{ iface.description }}
+ ipv4 address {{ iface.ipv4 }} 255.255.255.{{ 252 if iface.prefix_length == 30 else 0 }}
+ no shutdown
+!
+{% endfor %}
+
+{# ---------- IS-IS ---------- #}
+router isis {{ isis_process_name }}
+ net {{ isis_net }}
+ address-family ipv4 unicast
+  metric-style {{ isis_metric_style }}
+ !
+ interface {{ loopback.name }}
+  passive
+  address-family ipv4 unicast
+  !
+ !
+{% for iface in interfaces %}
+{% if iface.isis_enabled %}
+ interface {{ iface.name }}
+  circuit-type {{ isis_level }}
+  point-to-point
+  address-family ipv4 unicast
+  !
+ !
+{% endif %}
+{% endfor %}
+!
+
+{# ---------- BGP ---------- #}
+router bgp {{ bgp_as }}
+ bgp router-id {{ loopback.ipv4 }}
+ address-family ipv4 unicast
+ !
+{% for neighbor in bgp_neighbors %}
+ neighbor {{ neighbor.peer_ip }}
+  remote-as {{ neighbor.remote_as }}
+  description {{ neighbor.description }}
+  update-source {{ loopback.name }}
+  address-family ipv4 unicast
+  !
+ !
+{% endfor %}
+!

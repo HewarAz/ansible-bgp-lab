@@ -1,0 +1,53 @@
+---
+
+# PLAY 1: Render and push configurations to the routers
+- name: Configure XRd routers
+  hosts: xrd_routers
+  gather_facts: false
+
+  tasks:
+
+    - name: Push rendered configuration to router
+      cisco.iosxr.iosxr_config:
+        src: "xrd_config.j2"
+      register: config_result
+
+    - name: Show what changed
+      ansible.builtin.debug:
+        var: config_result
+      when: config_result.changed
+
+# PLAY 2: Verify IS-IS and BGP state
+- name: Verify IS-IS and BGP state
+  hosts: xrd_routers
+  gather_facts: false
+
+  tasks:
+
+    - name: Check IS-IS neighbors
+      cisco.iosxr.iosxr_command:
+        commands:
+          - "show isis neighbors"
+        wait_for:
+          - "result[0] contains 'Up'"
+        retries: 10
+        interval: 5
+      register: isis_output
+
+    - name: Print IS-IS neighbor table
+      ansible.builtin.debug:
+        var: isis_output.stdout_lines
+
+    - name: Check BGP neighbor summary
+      cisco.iosxr.iosxr_command:
+        commands:
+          - "show bgp summary"
+        wait_for:
+          - "result[0] contains 'BGP router identifier'"
+        retries: 15
+        interval: 5
+      register: bgp_output
+
+    - name: Print BGP summary
+      ansible.builtin.debug:
+        var: bgp_output.stdout_lines

@@ -1,0 +1,12 @@
+---
+
+isis_process_name: LAB
+isis_level: level-2-only
+isis_metric_style: wide
+
+bgp_as: 65000
+loopback_prefix: 32
+
+loopback_subnet: "192.168.0"
+
+ptp_subnet_base: "10.0"
